@@ -1,0 +1,55 @@
+---
+title: "Power Calculation"
+author: "Robert Schultz"
+date: "11/1/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Load the pwr package
+library(pwr)
+```
+
+```{r}
+# Set parameters
+effect_size <- 0.85  # Effect Size (Cohen's)
+sig_level <- 0.05   # Significance level (5%)
+power <- 0.75       # Desired power (75%)
+
+response_rate_group1 <- 0.25  # Response rate for group 1 (25%)
+response_rate_group2 <- 0.35  # Response rate for group 2 (35%)
+```
+
+```{r}
+# Calculate the base sample size (assuming equal group sizes)
+base_result <- pwr.2p.test(h = effect_size, 
+                           sig.level = sig_level, 
+                           power = power)
+```
+
+```{r}
+# Calculate adjusted sample sizes based on response rates
+n1 <- ceiling(base_result$n / response_rate_group1)
+n2 <- ceiling(base_result$n / response_rate_group2)
+```
+
+```{r}
+# Perform power calculation with adjusted sample sizes
+result <- pwr.2p2n.test(h = effect_size,
+                        n1 = n1,
+                        n2 = n2,
+                        sig.level = sig_level)
+```
+
+```{r}
+# Print the results
+print(result)
+```
+
+```{r}
+# Print adjusted sample sizes
+cat("Sample size for group One:", n1, "\n")
+cat("Sample size for group Two:", n2, "\n")
+cat("Achieved power:", result$power, "\n")
+```
+
